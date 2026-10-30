@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docker-cpg"
+version = "0.1.0"
+description = "docker cp with wildcards, several sources and excludes; works on stopped containers and images without a shell"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [{name = "Jonathan Wrede"}]
+keywords = ["docker", "docker-cp", "glob", "wildcard", "cli-plugin"]
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/Jwrede/docker-cpg"
+
+[project.scripts]
+docker-cpg = "docker_cpg:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        python: ["3.9", "3.12", "3.13"]
+    env:
+      DOCKER_CPG_REQUIRE_DOCKER: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: docker version --format 'docker {{.Server.Version}}'
+      - run: python -m pip install -e .
+      - name: Unit and Docker integration tests
+        run: python -m unittest discover -s tests -v
+      - name: Docker CLI plugin
+        run: |
+          mkdir -p ~/.docker/cli-plugins
+          ln -s "$(which docker-cpg)" ~/.docker/cli-plugins/docker-cpg
+          docker --help | grep -E '^\s+cpg\*?\s'
+          docker run --name web -d busybox:1.36 sh -c 'mkdir -p /logs/old && echo a > /logs/a.log && echo b > /logs/b.log && echo c > /logs/old/c.log && sleep 300'
+          sleep 2
+          docker cpg 'web:/logs/**/*.log' out
+          test "$(ls out | sort | tr '\n' ' ')" = "a.log b.log c.log "
+          docker --context default cpg -n 'web:/logs/*.log' out2 | grep -q '/logs/a.log'
+          docker rm -f web

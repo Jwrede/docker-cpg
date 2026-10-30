@@ -138,7 +138,8 @@ docker-cpg: copied 3 item(s) to web:/app
   whose target was not copied is skipped with a warning.
 - No copying between two containers, no brace expansion (`{a,b}`; an unquoted one is
   expanded by your shell into several sources, which works), no `.dockerignore` parsing.
-- Tested with Docker 27 on Linux (locally and on GitHub's ubuntu-24.04 runners).
+- Tested on Linux with Docker 27.0 (locally) and Docker 28.0 (GitHub's ubuntu-24.04
+  runners), Python 3.9 to 3.13.
   `--docker podman` is not tested.
 
 ## Development
